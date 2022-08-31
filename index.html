@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<style>
+			body {
+				padding: 0;
+				margin:  0;
+				overflow: hidden;
+			}
+			iframe {
+				width:  100vw;
+				height: 100vh;
+				border: medium none;
+				vertical-align: bottom;
+			}
+		</style>
+	</head>
+	<body>
+		<iframe onload="funLoad()" marginwidth="0" marginheight="0"></iframe>
+		<script>
+			var url = "https://m.laozhi.cc:8000/weiw_mc";
+			document.querySelector("iframe").src = window.location.href.replace(/https?:\/\/[A-Za-z0-9:.]+/,url);
+			function funLoad()
+			{
+				if (!!(window.history && history.pushState && history.replaceState))
+				{
+					document.domain  = "laozhi.cc";
+					var pushState    = window.frames[0].history['pushState'];
+					var replaceState = window.frames[0].history['replaceState'];
+					var popstate     = function ()
+					{
+						document.querySelector("title").innerHTML = window.frames[0].document.querySelector("title").innerHTML;
+						window.history.replaceState(null, null, window.frames[0].location.href.replace(url,""));
+						return popstate;
+					};
+					window.frames[0].history.pushState    = function (){ pushState   .apply(this, arguments); popstate(); }
+					window.frames[0].history.replaceState = function (){ replaceState.apply(this, arguments); popstate(); }
+					window.frames[0].addEventListener("hashchange",popstate);
+					window.frames[0].addEventListener("popstate",popstate());
+				}
+			};
+		</script>
+	</body>
+</html>
